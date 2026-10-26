@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lähitaksi Ilmoitukset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+body { margin: 0; }
+/* Lähitaksi Portaali -tyyli: musta yläpalkki, keltainen vain toiminnoissa, lämmin vaalea pohja ja pehmeät kortit */
+:root {
+  --yellow: #ffd400;
+  --yellow-hover: #f5c800;
+  --yellow-soft: #fff6cc;
+  --on-yellow: #0e0e0e;
+  --ink: #0e0e0e;
+  --muted: #66655f;
+  --page: #f6f6f3;
+  --card: #ffffff;
+  --sunken: #f1f0ec;
+  --line: #ebe9e4;
+  --line-strong: #d6d3cc;
+  --header: #ffd400;
+  --on-header: #0e0e0e;
+  --on-header-muted: #b5b3ad;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+  --success: #1e7a46;
+  --badge-sell-bg: #0e0e0e;
+  --badge-sell-fg: #ffd400;
+  --shadow: 0 1px 2px rgba(17,17,17,.04), 0 8px 24px rgba(17,17,17,.05);
+  --shadow-pop: 0 2px 4px rgba(17,17,17,.06), 0 16px 40px rgba(17,17,17,.10);
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--page); color: var(--ink); }
+body { font-family: var(--font); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--header); }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+/* Yläpalkki */
+.topbar { background: var(--header); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; }
+.topbar-inner { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.topbar-left { display: flex; align-items: center; gap: 28px; }
+.logo { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--on-header); font-weight: 800; font-size: 16px; letter-spacing: 0.04em; }
+.logo svg { fill: var(--on-header); }
+.nav-link { background: rgba(0,0,0,.07); border: 0; color: var(--on-header); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.nav-link:hover { background: rgba(0,0,0,.12); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.login-link { background: var(--ink); color: #fff; border: 0; border-radius: 999px; padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.login-link:hover { background: #2a2a28; }
+
+.usermenu { position: relative; }
+.usermenu > button { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,.07); border: 0; border-radius: 999px; padding: 4px 12px 4px 4px; color: var(--on-header); font-size: 13px; font-weight: 600; cursor: pointer; min-height: 40px; }
+.usermenu > button:hover { background: rgba(0,0,0,.12); }
+.usermenu > button .avatar { background: var(--ink); color: var(--yellow); }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--yellow); color: var(--on-yellow); display: grid; place-items: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+.usermenu-pop { position: absolute; right: 0; top: calc(100% + 8px); background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-pop); padding: 6px; min-width: 240px; z-index: 30; }
+.usermenu-pop .who { padding: 10px 12px 12px; border-bottom: 1px solid var(--line); margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; }
+.usermenu-pop .who strong { font-size: 14px; font-weight: 700; }
+.usermenu-pop .who span { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.menu-item { display: block; width: 100%; background: none; border: 0; text-align: left; padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.menu-item:hover { background: var(--sunken); }
+
+/* Sivun runko */
+.main { padding-block: 40px 64px; }
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.page-head h1 { margin: 0; font-size: 32px; line-height: 1.1; font-weight: 800; letter-spacing: -0.03em; text-wrap: balance; }
+.page-head p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+.btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--yellow); color: var(--on-yellow); border: 0; border-radius: 999px; padding: 12px 20px; font-size: 14px; font-weight: 700; cursor: pointer; min-height: 44px; }
+.btn-primary:hover { background: var(--yellow-hover); }
+.btn-primary:disabled { opacity: .6; cursor: wait; }
+.btn-ghost { background: var(--card); border: 1px solid var(--line-strong); border-radius: 999px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; min-height: 40px; }
+.btn-ghost:hover:not(:disabled) { background: var(--sunken); }
+.btn-ghost:disabled { color: var(--muted); opacity: .55; cursor: default; }
+.btn-danger { background: none; border: 1px solid var(--danger); color: var(--danger); border-radius: 999px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; min-height: 40px; }
+.btn-danger.solid { background: var(--danger); color: #fff; }
+.btn-block { width: 100%; justify-content: center; }
+
+/* Suodattimet */
+.filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.seg { display: flex; background: var(--sunken); border-radius: 999px; padding: 4px; gap: 2px; }
+.seg button { background: transparent; border: 0; color: var(--muted); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 999px; cursor: pointer; min-height: 36px; white-space: nowrap; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(17,17,17,.08); }
+
+/* Lista */
+.list { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+.row { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: center; gap: 16px; width: 100%; padding: 18px 20px; background: none; border: 0; border-bottom: 1px solid var(--line); text-align: left; cursor: pointer; }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: var(--sunken); }
+.row:hover .chev { transform: translateX(2px); color: var(--ink); }
+.col-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.row-title { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.row-meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chev { color: var(--muted); transition: transform .15s ease; }
+.badge { display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.01em; }
+.badge.myydaan { background: var(--badge-sell-bg); color: var(--badge-sell-fg); }
+.badge.ostetaan { background: var(--yellow); color: var(--on-yellow); }
+.chip { display: inline-flex; align-items: center; background: var(--sunken); color: var(--ink); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+.empty { margin: 0; padding: 48px 20px; text-align: center; color: var(--muted); font-size: 14px; }
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Kortit ja lomakkeet */
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 28px; }
+.form { display: flex; flex-direction: column; gap: 18px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > label { font-size: 13px; font-weight: 600; }
+.field input, .field select, .field textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--card); border: 1px solid var(--line-strong); border-radius: 12px; padding: 11px 14px; min-height: 46px; width: 100%; transition: border-color .15s, box-shadow .15s; }
+.field select { appearance: none; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2366655f' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+.field select:invalid { color: var(--muted); }
+.field textarea { resize: vertical; min-height: 200px; line-height: 1.6; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px var(--yellow-soft); }
+.form-actions { display: flex; justify-content: flex-end; }
+.alert { background: var(--danger-soft); color: var(--danger); border-radius: 12px; padding: 12px 14px; font-size: 14px; font-weight: 500; }
+.note { font-size: 13px; color: var(--muted); margin: 0; text-align: center; }
+.narrow { max-width: 440px; margin: 0 auto; }
+.narrow .page-head { justify-content: center; text-align: center; }
+
+/* Ilmoitus */
+.back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--muted); background: none; border: 0; padding: 6px 0; margin-bottom: 16px; cursor: pointer; }
+.back:hover { color: var(--ink); }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.show-title { font-size: 30px; line-height: 1.15; font-weight: 800; letter-spacing: -0.03em; margin: 16px 0 6px; overflow-wrap: anywhere; text-wrap: balance; }
+.show-date { margin: 0; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.show-body { white-space: pre-wrap; font-size: 16px; line-height: 1.7; margin: 24px 0; max-width: 65ch; overflow-wrap: anywhere; }
+.author { display: flex; align-items: center; gap: 14px; padding: 18px; background: var(--sunken); border-radius: 14px; }
+.author .avatar { width: 44px; height: 44px; font-size: 16px; }
+.author-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 14px; }
+.author-text strong { font-size: 15px; font-weight: 700; }
+.author-text span { color: var(--muted); user-select: all; overflow-wrap: anywhere; }
+.own-actions { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.own-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; }
+
+/* Omat tiedot */
+.settings { display: flex; flex-direction: column; gap: 20px; }
+.set-sec { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 24px; align-items: start; }
+.set-side h2 { margin: 4px 0 4px; font-size: 16px; font-weight: 700; }
+.set-side p { margin: 0; font-size: 14px; color: var(--muted); }
+.set-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+.set-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.set-foot { border-top: 1px solid var(--line); padding: 14px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; }
+.set-foot .btn-primary { min-height: 40px; padding: 9px 18px; font-size: 13px; }
+.set-sec + .set-sec { padding-top: 20px; border-top: 1px solid var(--line); }
+.ok { font-size: 13px; color: var(--success); font-weight: 600; }
+.err { font-size: 13px; color: var(--danger); font-weight: 600; }
+.text-sm { font-size: 14px; color: var(--muted); margin: 0; }
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.topbar :focus-visible { outline-color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 720px) {
+  .page-head h1 { font-size: 26px; }
+  .set-sec { grid-template-columns: 1fr; gap: 12px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .panel { padding: 20px; }
+  .row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: 16px; }
+  .row .col-type { grid-column: 1 / -1; }
+  .nav-link { display: none; }
+  .show-title { font-size: 24px; }
+}
+@media (max-width: 480px) {
+  .seg { width: 100%; }
+  .seg button { flex: 1 1 0; padding: 8px 6px; }
+  #userName { display: none; }
+  .usermenu > button { padding-right: 8px; }
+}
+</style>
+
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="topbar-left">
+      <button class="logo" id="logo" aria-label="Lähitaksi, ilmoitukset">
+        <svg width="40" height="14" viewBox="0 0 40 14" aria-hidden="true"><rect x="0" y="0" width="8" height="7"/><rect x="8" y="7" width="8" height="7"/><rect x="16" y="0" width="8" height="7"/><rect x="24" y="7" width="8" height="7"/><rect x="32" y="0" width="8" height="7"/></svg>
+        <span>LÄHITAKSI</span>
+      </button>
+      <button class="nav-link" id="navList">Ilmoitukset</button>
+    </div>
+    <div class="topbar-right" id="userArea">
+      <button class="login-link" id="loginLink">Kirjaudu sisään</button>
+      <div class="usermenu" id="userMenu" hidden>
+        <button id="userBtn" aria-expanded="false" aria-haspopup="true">
+          <span class="avatar" id="userInitial" aria-hidden="true"></span>
+          <span id="userName">Käyttäjä</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="usermenu-pop" id="userPop" hidden>
+          <div class="who"><strong id="userPopName"></strong><span id="userPopEmail"></span></div>
+          <button class="menu-item" id="profileBtn">Omat tiedot</button>
+          <button class="menu-item" id="myListBtn">Omat ilmoitukset</button>
+          <button class="menu-item" id="logoutBtn">Kirjaudu ulos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="profileBand" hidden></div>
+<main class="wrap main">
+  <!-- Lista -->
+  <section id="viewList">
+    <div class="page-head">
+      <div>
+        <h1 id="listTitle">Ilmoitukset</h1>
+        <p id="listCount">Palvelusopimukset ja osakkeet</p>
+      </div>
+      <button class="btn-primary" id="newBtn" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Luo uusi ilmoitus
+      </button>
+    </div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Ilmoitustyyppi" id="segType">
+        <button aria-pressed="true" data-v="">Kaikki</button>
+        <button aria-pressed="false" data-v="ostetaan">Ostetaan</button>
+        <button aria-pressed="false" data-v="myydaan">Myydään</button>
+      </div>
+      <div class="seg" role="group" aria-label="Ilmoituksen aihe" id="segTopic">
+        <button aria-pressed="true" data-v="">Kaikki</button>
+        <button aria-pressed="false" data-v="palvelusopimus">Palvelusopimus</button>
+        <button aria-pressed="false" data-v="osake">Osake</button>
+      </div>
+    </div>
+    <div class="list" id="list"><p class="empty">Ladataan ilmoituksia…</p></div>
+    <div class="pager">
+      <button class="btn-ghost" id="prev" disabled>Edellinen</button>
+      <span id="pageInfo"></span>
+      <button class="btn-ghost" id="next" disabled>Seuraava</button>
+    </div>
+  </section>
+
+  <!-- Kirjautuminen -->
+  <section class="narrow" id="viewLogin" hidden>
+    <div class="page-head"><div><h1>Kirjaudu sisään</h1><p>Kirjautuneena voit jättää ilmoituksia.</p></div></div>
+    <div class="panel">
+      <form class="form" id="loginForm" novalidate>
+        <div class="alert" id="loginErr" role="alert" hidden></div>
+        <div class="field">
+          <label for="lName">Nimi</label>
+          <input id="lName" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="lEmail">Sähköposti</label>
+          <input id="lEmail" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="lPass">Salasana</label>
+          <input id="lPass" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-primary btn-block">Kirjaudu</button>
+        <p class="note">Demoversio: uusi sähköposti luo tilin automaattisesti. Tiedot tallentuvat vain tähän selaimeen.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Uusi ilmoitus -->
+  <section id="viewNew" hidden>
+    <button class="back" id="newBack">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      Ilmoitukset
+    </button>
+    <div class="page-head"><div><h1 id="newTitle">Uusi ilmoitus</h1><p id="newSub">Ilmoitus näkyy heti listassa.</p></div></div>
+    <div class="panel">
+      <form class="form" id="newForm" novalidate>
+        <div class="alert" id="formErr" role="alert" hidden></div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="fType">Ilmoituksen tyyppi</label>
+            <select id="fType" required>
+              <option value="" selected disabled>Valitse tyyppi</option>
+              <option value="ostetaan">Ostetaan</option>
+              <option value="myydaan">Myydään</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fTopic">Ilmoituksen aihe</label>
+            <select id="fTopic" required>
+              <option value="" selected disabled>Valitse aihe</option>
+              <option value="palvelusopimus">Palvelusopimus</option>
+              <option value="osake">Osake</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fTitle">Otsikko</label>
+          <input id="fTitle" type="text" maxlength="120" required placeholder="Esim. Myydään palvelusopimus">
+        </div>
+        <div class="field">
+          <label for="fBody">Sisältö</label>
+          <textarea id="fBody" rows="9" maxlength="5000" required placeholder="Kerro hinta, aikataulu ja muut tiedot."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" id="submitBtn">Julkaise ilmoitus</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Omat tiedot -->
+  <div id="viewProfile" hidden>
+    <div class="page-head"><div><h1>Omat tiedot</h1><p>Nämä tiedot näkyvät ilmoituksissasi.</p></div></div>
+    <div class="settings">
+      <section class="set-sec">
+        <div class="set-side"><h2>Yhteystiedot</h2><p>Päivitä nimi, sähköposti ja puhelinnumero.</p></div>
+        <form class="set-card" id="pForm" novalidate>
+          <div class="set-body">
+            <div class="field"><label for="pName">Nimi</label><input id="pName" type="text" autocomplete="name"></div>
+            <div class="field"><label for="pEmail">Sähköpostiosoite</label><input id="pEmail" type="email" autocomplete="email"></div>
+            <div class="field"><label for="pPhone">Puhelinnumero</label><input id="pPhone" type="tel" autocomplete="tel"></div>
+          </div>
+          <div class="set-foot"><span id="pMsg" role="status"></span><button type="submit" class="btn-primary">Tallenna</button></div>
+        </form>
+      </section>
+      <section class="set-sec">
+        <div class="set-side"><h2>Salasana</h2><p>Käytä vähintään 8 merkkiä pitkää salasanaa.</p></div>
+        <form class="set-card" id="pwForm" novalidate>
+          <div class="set-body">
+            <div class="field"><label for="pwOld">Nykyinen salasana</label><input id="pwOld" type="password" autocomplete="current-password"></div>
+            <div class="field"><label for="pwNew">Uusi salasana</label><input id="pwNew" type="password" autocomplete="new-password"></div>
+            <div class="field"><label for="pwNew2">Vahvista uusi salasana</label><input id="pwNew2" type="password" autocomplete="new-password"></div>
+          </div>
+          <div class="set-foot"><span id="pwMsg" role="status"></span><button type="submit" class="btn-primary">Vaihda salasana</button></div>
+        </form>
+      </section>
+      <section class="set-sec">
+        <div class="set-side"><h2>Poista tili</h2><p>Tiliä ei voi palauttaa poiston jälkeen.</p></div>
+        <div class="set-card"><div class="set-body">
+          <p class="text-sm">Tili ja kaikki omat ilmoituksesi poistetaan pysyvästi.</p>
+          <div><button class="btn-danger" id="delAcc">Poista tili</button></div>
+          <div class="confirm" id="delAccConfirm" hidden>
+            <span>Poistetaanko tili varmasti?</span>
+            <button class="btn-danger solid" id="delAccYes">Poista tili</button>
+            <button class="btn-ghost" id="delAccNo">Peruuta</button>
+          </div>
+        </div></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Yksittäinen ilmoitus -->
+  <section id="viewShow" hidden>
+    <button class="back" id="backBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      Ilmoitukset
+    </button>
+    <article class="panel">
+      <div class="tags"><span class="badge" id="sType"></span><span class="chip" id="sTopic"></span></div>
+      <h1 class="show-title" id="sTitle"></h1>
+      <p class="show-date" id="sMeta"></p>
+      <div class="show-body" id="sBody"></div>
+      <div class="author" id="sAuthor">
+        <span class="avatar" id="aInitial" aria-hidden="true"></span>
+        <div class="author-text">
+          <strong id="aName"></strong>
+          <span id="aPhone"></span>
+          <span id="aEmail"></span>
+        </div>
+      </div>
+      <div class="own-actions" id="sOwn" hidden>
+        <div class="own-btns" id="ownBtns">
+          <button class="btn-ghost" id="editBtn">Muokkaa ilmoitusta</button>
+          <button class="btn-danger" id="delBtn">Poista ilmoitus</button>
+        </div>
+        <div class="confirm" id="delConfirm" hidden>
+          <span>Poistetaanko ilmoitus pysyvästi?</span>
+          <button class="btn-danger solid" id="delYes">Poista</button>
+          <button class="btn-ghost" id="delNo">Peruuta</button>
+        </div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<script>
+(function () {
+  var TYPES = { ostetaan: 'Ostetaan', myydaan: 'Myydään' };
+  var TOPICS = { palvelusopimus: 'Palvelusopimus', osake: 'Osake' };
+  var PAGE = 10;
+  var KEY = 'lt-ilmoitukset-v1', UKEY = 'lt-kayttaja-v1', AKEY = 'lt-tilit-v1';
+  var $ = function (id) { return document.getElementById(id); };
+
+  var SEED = [
+    ['myydaan','palvelusopimus','Palvelusopimus myytävänä','2026-10-26T10:41:00Z'],
+    ['myydaan','palvelusopimus','Myydään palvelusopimus','2026-10-22T08:17:00Z'],
+    ['myydaan','osake','Myydään osakeyhtiö','2026-10-22T03:03:00Z'],
+    ['myydaan','palvelusopimus','Myydään 4 kpl palvelusopimuksia','2026-10-21T04:49:00Z'],
+    ['ostetaan','palvelusopimus','LÄHITAKSIN PALVELUSOPIMUS','2026-10-20T08:05:00Z'],
+    ['myydaan','palvelusopimus','Myydän','2026-10-12T17:43:00Z'],
+    ['myydaan','palvelusopimus','Myydään Palvelusopimus','2026-10-10T12:06:00Z'],
+    ['myydaan','palvelusopimus','Palvelusopimus','2026-10-09T07:55:00Z'],
+    ['myydaan','palvelusopimus','Myydään palvelusopimuksia','2026-10-08T14:50:00Z'],
+    ['myydaan','palvelusopimus','Myydään 3 kpl palvelusopimuksia','2026-10-08T08:39:00Z']
+  ].map(function (r, i) { return { id: 'e' + i, type: r[0], topic: r[1], title: r[2], body: 'Esimerkki-ilmoituksen sisältö.', createdAt: r[3], author: 'Esimerkki', email: '' }; });
+
+  function load(k, fallback) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var state = { type: '', topic: '', page: 1, items: load(KEY, null) || SEED.slice(), user: load(UKEY, null), accounts: load(AKEY, {}), current: null, after: null, mineOnly: false, editing: null };
+  if (state.user && !state.accounts[state.user.email]) state.user = null;
+
+  function persist() { save(KEY, state.items); }
+
+  function fmt(iso) {
+    var p = new Intl.DateTimeFormat('fi-FI', { timeZone: 'Europe/Helsinki', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date(iso));
+    var g = function (t) { var x = p.find(function (q) { return q.type === t; }); return x ? x.value : ''; };
+    return g('day') + '.' + g('month') + '.' + g('year') + ' ' + g('hour') + ':' + g('minute');
+  }
+
+  function show(view) {
+    ['List', 'Login', 'New', 'Show', 'Profile'].forEach(function (v) { $('view' + v).hidden = v.toLowerCase() !== view; });
+    $('profileBand').hidden = view !== 'profile';
+    $('userPop').hidden = true;
+    window.scrollTo(0, 0);
+  }
+
+  function renderUser() {
+    var u = state.user;
+    $('loginLink').hidden = !!u; $('userMenu').hidden = !u; $('newBtn').hidden = !u;
+    if (u) u = acct();
+    if (u) { $('userInitial').textContent = u.name.trim().charAt(0).toUpperCase(); $('userName').textContent = u.name; $('userPopName').textContent = u.name; $('userPopEmail').textContent = u.email; }
+  }
+
+  function acct() { return state.user ? state.accounts[state.user.email] : null; }
+
+  function renderList() {
+    var items = state.items.slice().sort(function (a, b) { return a.createdAt < b.createdAt ? 1 : -1; }).filter(function (i) {
+      return (!state.type || i.type === state.type) && (!state.topic || i.topic === state.topic) && (!state.mineOnly || (state.user && i.owner === state.user.email));
+    });
+    $('listTitle').textContent = state.mineOnly ? 'Omat ilmoitukset' : 'Ilmoitukset';
+    $('listCount').textContent = items.length === 1 ? '1 ilmoitus' : items.length + ' ilmoitusta';
+    var pages = Math.max(1, Math.ceil(items.length / PAGE));
+    if (state.page > pages) state.page = pages;
+    var slice = items.slice((state.page - 1) * PAGE, state.page * PAGE);
+    var list = $('list'); list.textContent = '';
+    if (!slice.length) {
+      var p = document.createElement('p'); p.className = 'empty';
+      p.textContent = (state.type || state.topic) ? 'Ei ilmoituksia valituilla suodattimilla.' : state.mineOnly ? 'Sinulla ei ole vielä ilmoituksia. Luo ensimmäinen painikkeesta Luo uusi ilmoitus.' : 'Ei vielä ilmoituksia.';
+      list.appendChild(p);
+    }
+    slice.forEach(function (it) {
+      var b = document.createElement('button'); b.className = 'row'; b.type = 'button';
+      b.innerHTML = '<span class="col-type"><span class="badge"></span></span><span class="col-text"><span class="row-title"></span><span class="row-meta"></span></span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+      var badge = b.querySelector('.badge'); badge.classList.add(it.type); badge.textContent = TYPES[it.type];
+      b.querySelector('.row-title').textContent = it.title;
+      b.querySelector('.row-meta').textContent = TOPICS[it.topic] + ' · ' + fmt(it.createdAt);
+      b.addEventListener('click', function () { openShow(it, state.mineOnly); });
+      list.appendChild(b);
+    });
+    $('prev').disabled = state.page <= 1;
+    $('next').disabled = state.page >= pages;
+    $('pageInfo').textContent = items.length > PAGE ? 'Sivu ' + state.page + ' / ' + pages : '';
+  }
+
+  function resetSegs() {
+    ['segType', 'segTopic'].forEach(function (id) { Array.prototype.forEach.call($(id).querySelectorAll('button'), function (x, i) { x.setAttribute('aria-pressed', i === 0 ? 'true' : 'false'); }); });
+  }
+  function setSeg(id, key) {
+    $(id).addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      state[key] = b.dataset.v; state.page = 1;
+      Array.prototype.forEach.call($(id).querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      renderList();
+    });
+  }
+  setSeg('segType', 'type'); setSeg('segTopic', 'topic');
+  $('prev').addEventListener('click', function () { state.page--; renderList(); });
+  $('next').addEventListener('click', function () { state.page++; renderList(); });
+  function goList(mine) { state.mineOnly = mine; state.type = ''; state.topic = ''; state.page = 1; resetSegs(); renderList(); show('list'); }
+  $('logo').addEventListener('click', function () { goList(false); });
+  $('navList').addEventListener('click', function () { goList(false); });
+  $('myListBtn').addEventListener('click', function () { goList(true); });
+  $('backBtn').addEventListener('click', function () { show('list'); });
+  $('newBack').addEventListener('click', function () { if (state.editing && state.current) { openShow(state.current, true); } else { show('list'); } });
+  $('loginLink').addEventListener('click', function () { state.after = null; $('loginErr').hidden = true; show('login'); $('lName').focus(); });
+  $('newBtn').addEventListener('click', function () { openForm(null); });
+
+  $('userBtn').addEventListener('click', function () {
+    var open = $('userPop').hidden;
+    $('userPop').hidden = !open; $('userBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function (e) {
+    if (!$('userMenu').contains(e.target)) { $('userPop').hidden = true; $('userBtn').setAttribute('aria-expanded', 'false'); }
+  });
+  $('logoutBtn').addEventListener('click', function () {
+    state.user = null; try { localStorage.removeItem(UKEY); } catch (e) {}
+    $('userPop').hidden = true; renderUser(); goList(false);
+  });
+
+  $('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('lName').value.trim(), email = $('lEmail').value.trim(), pass = $('lPass').value;
+    var errs = [];
+    if (!name) errs.push('Kirjoita nimesi.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.push('Tarkista sähköpostiosoite.');
+    if (!pass) errs.push('Kirjoita salasana.');
+    if (errs.length) { $('loginErr').textContent = errs.join(' '); $('loginErr').hidden = false; return; }
+    var key = email.toLowerCase(), acc = state.accounts[key];
+    if (acc && acc.password !== pass) { $('loginErr').textContent = 'Väärä salasana.'; $('loginErr').hidden = false; return; }
+    if (!acc) { acc = state.accounts[key] = { name: name, email: key, phone: '', password: pass }; save(AKEY, state.accounts); }
+    state.user = { email: key };
+    save(UKEY, state.user);
+    $('loginForm').reset(); renderUser();
+    if (state.after === 'new') { show('new'); } else { show('list'); }
+  });
+
+  function openShow(it, fromMine) {
+    state.current = it; state.fromMine = !!fromMine;
+    var b = $('sType'); b.className = 'badge ' + it.type; b.textContent = TYPES[it.type];
+    $('sTopic').textContent = TOPICS[it.topic];
+    $('sTitle').textContent = it.title;
+    $('sBody').textContent = it.body;
+    $('sMeta').textContent = fmt(it.createdAt) + (it.updatedAt ? ' · Muokattu ' + fmt(it.updatedAt) : '');
+    $('aName').textContent = it.author || '';
+    $('aInitial').textContent = (it.author || '?').trim().charAt(0).toUpperCase();
+    $('aPhone').textContent = it.phone || ''; $('aPhone').hidden = !it.phone;
+    $('aEmail').textContent = it.email || ''; $('aEmail').hidden = !it.email;
+    $('delConfirm').hidden = true; $('ownBtns').hidden = false;
+    $('sOwn').hidden = !(state.fromMine && state.user && it.owner && it.owner === state.user.email);
+    show('show');
+  }
+
+  $('delBtn').addEventListener('click', function () { $('ownBtns').hidden = true; $('delConfirm').hidden = false; });
+  $('delNo').addEventListener('click', function () { $('ownBtns').hidden = false; $('delConfirm').hidden = true; });
+
+  function openForm(it) {
+    state.editing = it ? it.id : null;
+    $('newTitle').textContent = it ? 'Muokkaa ilmoitusta' : 'Uusi ilmoitus';
+    $('newSub').textContent = it ? 'Muutokset näkyvät heti listassa.' : 'Ilmoitus näkyy heti listassa.';
+    $('submitBtn').textContent = it ? 'Tallenna muutokset' : 'Julkaise ilmoitus';
+    $('newBack').lastChild.textContent = it ? ' Takaisin ilmoitukseen' : ' Ilmoitukset';
+    $('newForm').reset(); $('formErr').hidden = true;
+    if (it) { $('fType').value = it.type; $('fTopic').value = it.topic; $('fTitle').value = it.title; $('fBody').value = it.body; }
+    show('new'); $('fType').focus();
+  }
+  $('editBtn').addEventListener('click', function () { if (state.current) openForm(state.current); });
+  $('delYes').addEventListener('click', function () {
+    var id = state.current && state.current.id;
+    state.items = state.items.filter(function (x) { return x.id !== id; });
+    persist(); renderList(); show('list');
+  });
+
+  $('newForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var box = $('formErr');
+    if (!state.user) { state.after = 'new'; show('login'); return; }
+    var v = { type: $('fType').value, topic: $('fTopic').value, title: $('fTitle').value.trim(), body: $('fBody').value.trim() };
+    var errs = [];
+    if (!TYPES[v.type]) errs.push('Valitse ilmoituksen tyyppi.');
+    if (!TOPICS[v.topic]) errs.push('Valitse ilmoituksen aihe.');
+    if (!v.title) errs.push('Kirjoita otsikko.');
+    if (!v.body) errs.push('Kirjoita ilmoituksen sisältö.');
+    if (errs.length) { box.textContent = errs.join(' '); box.hidden = false; return; }
+    if (state.editing) {
+      var ex = state.items.find(function (x) { return x.id === state.editing; });
+      if (!ex || ex.owner !== state.user.email) { box.textContent = 'Ilmoitusta ei löytynyt.'; box.hidden = false; return; }
+      ex.type = v.type; ex.topic = v.topic; ex.title = v.title; ex.body = v.body; ex.updatedAt = new Date().toISOString();
+      persist(); state.editing = null; $('newForm').reset(); box.hidden = true;
+      renderList(); openShow(ex, true); return;
+    }
+    var item = { id: 'i' + Date.now().toString(36), type: v.type, topic: v.topic, title: v.title, body: v.body, createdAt: new Date().toISOString(), owner: state.user.email, author: acct().name, email: acct().email, phone: acct().phone || '' };
+    state.items.push(item); persist();
+    $('newForm').reset(); box.hidden = true;
+    state.type = ''; state.topic = ''; state.page = 1; resetSegs();
+    renderList(); openShow(item);
+  });
+
+  function msg(id, text, bad) { var m = $(id); m.textContent = text; m.className = bad ? 'err' : 'ok'; }
+
+  $('profileBtn').addEventListener('click', function () {
+    var a = acct(); if (!a) return;
+    $('pName').value = a.name; $('pEmail').value = a.email; $('pPhone').value = a.phone || '';
+    ['pMsg', 'pwMsg'].forEach(function (id) { $(id).textContent = ''; });
+    $('pwForm').reset(); $('delAcc').hidden = false; $('delAccConfirm').hidden = true;
+    show('profile');
+  });
+
+  $('pForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var a = acct(), name = $('pName').value.trim(), email = $('pEmail').value.trim().toLowerCase(), phone = $('pPhone').value.trim();
+    if (!name) return msg('pMsg', 'Kirjoita nimesi.', true);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('pMsg', 'Tarkista sähköpostiosoite.', true);
+    if (email !== a.email && state.accounts[email]) return msg('pMsg', 'Sähköpostilla on jo tili.', true);
+    var old = a.email;
+    a.name = name; a.phone = phone; a.email = email;
+    if (email !== old) { delete state.accounts[old]; state.accounts[email] = a; state.user = { email: email }; save(UKEY, state.user); }
+    state.items.forEach(function (it) { if (it.owner === old) { it.owner = email; it.author = name; it.email = email; it.phone = phone; } });
+    save(AKEY, state.accounts); persist(); renderUser(); renderList();
+    msg('pMsg', 'Tallennettu.');
+  });
+
+  $('pwForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var a = acct();
+    if ($('pwOld').value !== a.password) return msg('pwMsg', 'Nykyinen salasana on väärin.', true);
+    if ($('pwNew').value.length < 8) return msg('pwMsg', 'Uuden salasanan pitää olla vähintään 8 merkkiä.', true);
+    if ($('pwNew').value !== $('pwNew2').value) return msg('pwMsg', 'Salasanat eivät täsmää.', true);
+    a.password = $('pwNew').value; save(AKEY, state.accounts);
+    $('pwForm').reset(); msg('pwMsg', 'Salasana vaihdettu.');
+  });
+
+
+  $('delAcc').addEventListener('click', function () { $('delAcc').hidden = true; $('delAccConfirm').hidden = false; });
+  $('delAccNo').addEventListener('click', function () { $('delAcc').hidden = false; $('delAccConfirm').hidden = true; });
+  $('delAccYes').addEventListener('click', function () {
+    var email = state.user.email;
+    state.items = state.items.filter(function (it) { return it.owner !== email; });
+    delete state.accounts[email]; state.user = null;
+    save(AKEY, state.accounts); persist();
+    try { localStorage.removeItem(UKEY); } catch (e) {}
+    renderUser(); renderList(); show('list');
+  });
+
+  renderUser(); renderList();
+})();
+</script>
+</body>
+</html>
